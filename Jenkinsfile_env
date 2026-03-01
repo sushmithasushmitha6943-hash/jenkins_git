@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        APP = 'jenkins_project'
+        DB_URL = '192.168.28.24'           // Keep this if you want to use it
+        BRANCH = 'main'                     // Your default branch
+        GIT_URL = 'https://github.com/sushmithasushmitha6943/jenkins_git.git'
+        CRED_ID = 'github-creds'            // The credentials ID you use in Jenkins for GitHub
+    }
+
+    stages {
+        stage('Environment Variable') {
+            steps {
+                script {
+                    echo "App: ${env.APP}, DB_URL: ${env.DB_URL}"
+                }
+
+                // This will print APP variable in shell
+                sh "echo ${APP}"
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                git branch: "${env.BRANCH}",
+                    credentialsId: "${env.CRED_ID}",
+                    url: "${env.GIT_URL}"
+            }
+        }
+
+        stage('Verify Checkout') {
+            steps {
+                sh 'pwd'
+                sh 'ls -lrt'
+            }
+        }
+    }
+}
